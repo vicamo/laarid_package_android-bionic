@@ -1,0 +1,7 @@
+The Debian Package libandroid-bionic0
+-------------------------------------
+
+This package contains bits from Android bionic libc implementation
+that are not available in libc.
+
+ -- You-Sheng Yang <vicamo@gmail.com>  Tue, 28 Oct 2014 19:45:16 +0800

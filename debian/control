@@ -1,0 +1,30 @@
+Source: android-bionic
+Priority: extra
+Maintainer: You-Sheng Yang <vicamo@gmail.com>
+Build-Depends: debhelper (>= 9), dh-autoreconf
+Standards-Version: 3.9.5
+Section: libs
+Homepage: https://github.com/laarid/platform_bionic
+Vcs-Git: git+ssh://git@github.com:laarid/platform_bionic.git
+Vcs-Browser: https://github.com/laarid/platform_bionic
+
+Package: libandroid-bionic0-dev
+Priority: extra
+Section: libdevel
+Architecture: any
+Multi-Arch: same
+Depends: libandroid-bionic0 (= ${binary:Version}), ${misc:Depends}
+Description: Android Bionic Library - development
+ This package contains bits from Android bionic libc implementation that are not available in libc.
+ .
+ This package contains the development files.
+
+Package: libandroid-bionic0
+Priority: extra
+Section: libs
+Architecture: any
+Multi-Arch: same
+Pre-Depends: ${misc:Pre-Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Android Bionic Library
+ This package contains bits from Android bionic libc implementation that are not available in libc.
