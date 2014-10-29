@@ -22,5 +22,6 @@
 #include <bionicconfig.h>
 
 #include <bionic/gettid.h>
+#include <bionic/uio.h>
 
 #endif /* __BIONIC_BIONIC_H__ */
