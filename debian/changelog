@@ -1,6 +1,6 @@
 android-bionic (0.0.2) unstable; urgency=low
 
-  * add strlcpy.
+  * add strlcpy, open_memstream.
 
  -- You-Sheng Yang <vicamo@gmail.com>  Mon, 3 Nov 2014 15:29:30 +0800
 

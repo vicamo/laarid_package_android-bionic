@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 You-Sheng Yang
+ * Copyright (C) 2010 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +14,27 @@
  * limitations under the License.
  */
 
-#ifndef __BIONIC_BIONIC_H__
-#define __BIONIC_BIONIC_H__
+#ifndef __BIONIC_STDIO_H__
+#define __BIONIC_STDIO_H__
 
-#define __BIONIC_IN_BIONIC_H__ 1
+#if !defined(__BIONIC_IN_BIONIC_H__)
+#error "Only <bionic/bionic.h> can be included directly."
+#endif
 
-#include <bionicconfig.h>
+#include <stdio.h>
 
-#include <bionic/gettid.h>
-#include <bionic/stdio.h>
-#include <bionic/string.h>
-#include <bionic/uio.h>
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-#endif /* __BIONIC_BIONIC_H__ */
+#if defined(BIONIC_NEED_OPEN_MEMSTREAM)
+
+FILE* open_memstream(char** bufp, size_t* sizep);
+
+#endif /* BIONIC_NEED_OPEN_MEMSTREAM */
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* __BIONIC_STDIO_H__ */
