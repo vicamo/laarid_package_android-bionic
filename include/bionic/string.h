@@ -1,4 +1,5 @@
 /*
+ * Copyright (C) 2006 The Android Open Source Project
  * Copyright (C) 2014 You-Sheng Yang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,15 +15,29 @@
  * limitations under the License.
  */
 
-#ifndef __BIONIC_BIONIC_H__
-#define __BIONIC_BIONIC_H__
+#ifndef __BIONIC_STRING_H__
+#define __BIONIC_STRING_H__
 
-#define __BIONIC_IN_BIONIC_H__ 1
+#if !defined(__BIONIC_IN_BIONIC_H__)
+#error "Only <bionic/bionic.h> can be included directly."
+#endif
 
-#include <bionicconfig.h>
+#include <sys/types.h>
+#include <string.h>
 
-#include <bionic/gettid.h>
-#include <bionic/string.h>
-#include <bionic/uio.h>
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-#endif /* __BIONIC_BIONIC_H__ */
+#if defined(BIONIC_NEED_STRLCPY)
+
+/* Declaration of strlcpy() for platforms that don't already have it. */
+size_t strlcpy(char *dst, const char *src, size_t size);
+
+#endif /* BIONIC_NEED_STRLCPY */
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* __BIONIC_STRING_H__ */

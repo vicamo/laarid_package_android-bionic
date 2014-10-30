@@ -34,6 +34,7 @@ libandroid_bionic_0_la_LDFLAGS = \
 	$(libtool_opts)
 libandroid_bionic_0_la_SOURCES = \
 	src/gettid.c \
+	src/string.c \
 	src/uio.c
 
 # bionic HEADERS
@@ -42,6 +43,7 @@ bionicincdir = $(includedir)/android/bionic-$(BIONIC_API_VERSION)/bionic
 bionicinc_HEADERS = \
 	include/bionic/bionic.h \
 	include/bionic/gettid.h \
+	include/bionic/string.h \
 	include/bionic/uio.h
 
 # bionicconfig.h

@@ -102,6 +102,8 @@ AC_CHECK_FUNCS([gettid], [],
 # -------------
 AC_CHECK_HEADERS([sys/uio.h])
 
+AC_CHECK_FUNCS([strlcpy])
+
 PKG_PROG_PKG_CONFIG
 
 # AndroidConfig.h
@@ -140,6 +142,13 @@ _______EOF
 _______EOF
   fi
 
+  if test x$bionic_cfg_func_strlcpy != xyes; then
+    cat >>$outfile <<_______EOF
+#define BIONIC_NEED_STRLCPY 1
+
+_______EOF
+  fi
+
   cat >>$outfile <<_______EOF
 #ifdef __cplusplus
 } // extern "C"
@@ -167,6 +176,10 @@ fi
 
 if test x$ac_cv_header_sys_uio_h = xyes; then
   bionic_cfg_header_sys_uio_h=yes
+fi
+
+if test x$ac_cv_func_strlcpy = xyes; then
+  bionic_cfg_func_strlcpy=yes
 fi
 ])
 
