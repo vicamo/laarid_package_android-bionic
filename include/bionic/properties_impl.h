@@ -26,13 +26,14 @@
  * SUCH DAMAGE.
  */
 
-#ifndef _INCLUDE_SYS__SYSTEM_PROPERTIES_H
-#define _INCLUDE_SYS__SYSTEM_PROPERTIES_H
+#ifndef __BIONIC_PROPERTIES_IMPL_H__
+#define __BIONIC_PROPERTIES_IMPL_H__
 
-#ifndef _REALLY_INCLUDE_SYS__SYSTEM_PROPERTIES_H_
-#error you should #include <sys/system_properties.h> instead
-#else
-#include <sys/system_properties.h>
+#ifndef _REALLY_INCLUDE_BIONIC_PROPERTIES_IMPL_H_
+#error you should #include <bionic/bionic.h> instead
+#endif
+
+#include <bionic/bionic.h>
 
 typedef struct prop_msg prop_msg;
 
@@ -145,9 +146,8 @@ int __system_property_foreach_compat(
  *
  * Returns 0 on success, -1 otherwise.
  */
-int __system_properties_init();
+void __system_properties_init();
 
 __END_DECLS
 
-#endif
-#endif
+#endif /* __BIONIC_PROPERTIES_IMPL_H__ */

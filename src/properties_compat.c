@@ -36,10 +36,11 @@
 
 #include <string.h>
 
-#include "private/bionic_futex.h"
+#include "bionic/bionic.h"
+#define _REALLY_INCLUDE_BIONIC_PROPERTIES_IMPL_H_
+#include "bionic/properties_impl.h"
 
-#define _REALLY_INCLUDE_SYS__SYSTEM_PROPERTIES_H_
-#include <sys/_system_properties.h>
+#include "futex.h"
 
 #define TOC_NAME_LEN(toc)       ((toc) >> 24)
 #define TOC_TO_INFO(area, toc)  ((prop_info_compat*) (((char*) area) + ((toc) & 0xFFFFFF)))
@@ -68,7 +69,8 @@ typedef struct prop_info_compat prop_info_compat;
 
 extern prop_area *__system_property_area__;
 
-__LIBC_HIDDEN__ const prop_info *__system_property_find_compat(const char *name)
+__attribute__((visibility("hidden")))
+const prop_info *__system_property_find_compat(const char *name)
 {
     prop_area_compat *pa = (prop_area_compat *)__system_property_area__;
     unsigned count = pa->count;
@@ -94,7 +96,8 @@ __LIBC_HIDDEN__ const prop_info *__system_property_find_compat(const char *name)
     return 0;
 }
 
-__LIBC_HIDDEN__ int __system_property_read_compat(const prop_info *_pi, char *name, char *value)
+__attribute__((visibility("hidden")))
+int __system_property_read_compat(const prop_info *_pi, char *name, char *value)
 {
     unsigned serial, len;
     const prop_info_compat *pi = (const prop_info_compat *)_pi;
@@ -116,7 +119,8 @@ __LIBC_HIDDEN__ int __system_property_read_compat(const prop_info *_pi, char *na
     }
 }
 
-__LIBC_HIDDEN__ int __system_property_foreach_compat(
+__attribute__((visibility("hidden")))
+int __system_property_foreach_compat(
         void (*propfn)(const prop_info *pi, void *cookie),
         void *cookie)
 {

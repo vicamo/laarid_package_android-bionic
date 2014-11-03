@@ -45,15 +45,15 @@ extern "C" {
 #define  __ATOMIC_INLINE__  static __inline__ __attribute__((always_inline))
 
 #if defined(__arm__)
-#  include "bionic_atomic_arm.h"
+#  include "atomic_arm.h"
 #elif defined(__aarch64__)
-#  include "bionic_atomic_arm64.h"
+#  include "atomic_arm64.h"
 #elif defined(__i386__)
-#  include "bionic_atomic_x86.h"
+#  include "atomic_x86.h"
 #elif defined(__mips__)
-#  include "bionic_atomic_mips.h"
+#  include "atomic_mips.h"
 #else
-#  include "bionic_atomic_gcc_builtin.h"
+#  include "atomic_gcc_builtin.h"
 #endif
 
 #define ANDROID_MEMBAR_FULL  __bionic_memory_barrier

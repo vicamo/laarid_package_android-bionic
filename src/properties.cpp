@@ -26,7 +26,7 @@
  * SUCH DAMAGE.
  */
 #include <new>
-#include <stdatomic.h>
+#include <atomic>
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -46,14 +46,17 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <netinet/in.h>
+#include <linux/limits.h>
 
-#define _REALLY_INCLUDE_SYS__SYSTEM_PROPERTIES_H_
-#include <sys/_system_properties.h>
-#include <sys/system_properties.h>
+#include "bionic/bionic.h"
+#define _REALLY_INCLUDE_BIONIC_PROPERTIES_IMPL_H_
+#include "bionic/properties_impl.h"
 
-#include "private/bionic_atomic_inline.h"
-#include "private/bionic_futex.h"
-#include "private/bionic_macros.h"
+#include "atomic_inline.h"
+#include "futex.h"
+#include "macros.h"
+
+using namespace std;
 
 static const char property_service_socket[] = "/dev/socket/" PROP_SERVICE_NAME;
 
@@ -113,15 +116,14 @@ private:
 
 struct prop_area {
     uint32_t bytes_used;
-    atomic_uint_least32_t serial;
+    atomic<uint_least32_t> serial;
     uint32_t magic;
     uint32_t version;
     uint32_t reserved[28];
     char data[0];
 
     prop_area(const uint32_t magic, const uint32_t version) :
-        magic(magic), version(version) {
-        atomic_init(&serial, 0);
+        magic(magic), version(version), serial(0) {
         memset(reserved, 0, sizeof(reserved));
         // Allocate enough space for the root node.
         bytes_used = sizeof(prop_bt);
@@ -132,15 +134,15 @@ private:
 };
 
 struct prop_info {
-    atomic_uint_least32_t serial;
+    atomic<uint_least32_t> serial;
     char value[PROP_VALUE_MAX];
     char name[0];
 
     prop_info(const char *name, const uint8_t namelen, const char *value,
-              const uint8_t valuelen) {
+              const uint8_t valuelen)
+            : serial(((uint32_t)valuelen) << 24) {
         memcpy(this->name, name, namelen);
         this->name[namelen] = '\0';
-        atomic_init(&this->serial, valuelen << 24);
         memcpy(this->value, value, valuelen);
         this->value[valuelen] = '\0';
         ANDROID_MEMBAR_FULL();  // TODO: Instead use a release store
@@ -566,9 +568,9 @@ static int foreach_property(const uint32_t off,
     return 0;
 }
 
-int __system_properties_init()
+void __attribute__ ((constructor)) __system_properties_init()
 {
-    return map_prop_area();
+    map_prop_area();
 }
 
 int __system_property_set_filename(const char *filename)
@@ -596,9 +598,9 @@ const prop_info *__system_property_find(const char *name)
 
 // The C11 standard doesn't allow atomic loads from const fields,
 // though C++11 does.  Fudge it until standards get straightened out.
-static inline uint_least32_t load_const_atomic(const atomic_uint_least32_t* s,
+static inline uint_least32_t load_const_atomic(const atomic<uint_least32_t>* s,
                                                memory_order mo) {
-    atomic_uint_least32_t* non_const_s = const_cast<atomic_uint_least32_t*>(s);
+    atomic<uint_least32_t>* non_const_s = const_cast<atomic<uint_least32_t>*>(s);
     return atomic_load_explicit(non_const_s, mo);
 }
 

@@ -26,8 +26,12 @@
  * SUCH DAMAGE.
  */
 
-#ifndef _INCLUDE_SYS_SYSTEM_PROPERTIES_H
-#define _INCLUDE_SYS_SYSTEM_PROPERTIES_H
+#ifndef __BIONIC_PROPERTIES_H__
+#define __BIONIC_PROPERTIES_H__
+
+#if !defined(__BIONIC_IN_BIONIC_H__)
+#error "Only <bionic/bionic.h> can be included directly."
+#endif
 
 #include <sys/cdefs.h>
 
@@ -99,4 +103,4 @@ int __system_property_foreach(
 
 __END_DECLS
 
-#endif
+#endif /* __BIONIC_PROPERTIES_H__ */
