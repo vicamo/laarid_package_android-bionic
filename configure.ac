@@ -106,6 +106,14 @@ AC_CHECK_FUNCS([ funopen open_memstream strlcpy])
 
 PKG_PROG_PKG_CONFIG
 
+# SMP support
+# -----------
+AC_ARG_ENABLE([smp],
+  [AS_HELP_STRING([--enable-smp],
+    [enable ANDROID_SMP (default is yes)])], [], [enable_smp=yes])
+ANDROID_SMP=m4_case([x$enable_smp], [xyes], [1], [xno], [0], [1])
+AC_SUBST(ANDROID_SMP)
+
 # AndroidConfig.h
 # --------------
 AC_CONFIG_COMMANDS([bionicconfig.h],
@@ -175,6 +183,8 @@ bionic_cfg_defines="
 #define BIONIC_MAJOR_VERSION $BIONIC_MAJOR_VERSION
 #define BIONIC_MINOR_VERSION $BIONIC_MINOR_VERSION
 #define BIONIC_MICRO_VERSION $BIONIC_MICRO_VERSION
+
+#define ANDROID_SMP $ANDROID_SMP
 "
 
 if test x$ac_cv_func_gettid = xyes; then

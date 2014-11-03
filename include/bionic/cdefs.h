@@ -14,18 +14,21 @@
  * limitations under the License.
  */
 
-#ifndef __BIONIC_BIONIC_H__
-#define __BIONIC_BIONIC_H__
+#ifndef __BIONIC_CDEFS_H__
+#define __BIONIC_CDEFS_H__
 
-#define __BIONIC_IN_BIONIC_H__ 1
+#if !defined(__BIONIC_IN_BIONIC_H__)
+#error "Only <bionic/bionic.h> can be included directly."
+#endif
 
-#include <bionicconfig.h>
+#include <sys/cdefs.h>
 
-#include <bionic/cdefs.h>
-#include <bionic/gettid.h>
-#include <bionic/properties.h>
-#include <bionic/stdio.h>
-#include <bionic/string.h>
-#include <bionic/uio.h>
+#if defined(__GNUC__)
+#define __predict_false(expr) __glibc_unlikely(expr)
+#define __predict_true(expr)  __glibc_likely(expr)
+#else
+#define __predict_false(expr) (expr)
+#define __predict_true(expr)  (expr)
+#endif
 
-#endif /* __BIONIC_BIONIC_H__ */
+#endif /* __BIONIC_CDEFS_H__ */

@@ -20,6 +20,9 @@ AM_CPPFLAGS = \
 AM_CFLAGS = \
 	-Wall -Werror
 
+AM_CXXFLAGS = \
+	-std=c++11
+
 libtool_opts = \
 	-version-info $(LT_VERSION_INFO) \
 	-export-dynamic \
@@ -34,6 +37,8 @@ libandroid_bionic_0_la_LDFLAGS = \
 	$(libtool_opts)
 libandroid_bionic_0_la_SOURCES = \
 	src/gettid.c \
+	src/properties.cpp \
+	src/properties_compat.c \
 	src/stdio.c \
 	src/string.c \
 	src/uio.c
@@ -43,7 +48,10 @@ libandroid_bionic_0_la_SOURCES = \
 bionicincdir = $(includedir)/android/bionic-$(BIONIC_API_VERSION)/bionic
 bionicinc_HEADERS = \
 	include/bionic/bionic.h \
+	include/bionic/cdefs.h \
 	include/bionic/gettid.h \
+	include/bionic/properties.h \
+	include/bionic/properties_impl.h \
 	include/bionic/stdio.h \
 	include/bionic/string.h \
 	include/bionic/uio.h
