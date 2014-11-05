@@ -1,3 +1,9 @@
+android-bionic (0.0.3) unstable; urgency=low
+
+  * add wrapper for tgkill.
+
+ -- You-Sheng Yang <vicamo@gmail.com>  Wed, 5 Nov 2014 20:28:10 +0800
+
 android-bionic (0.0.2) unstable; urgency=low
 
   * add strlcpy, open_memstream.
