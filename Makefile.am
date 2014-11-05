@@ -36,12 +36,12 @@ lib_LTLIBRARIES = \
 libandroid_bionic_0_la_LDFLAGS = \
 	$(libtool_opts)
 libandroid_bionic_0_la_SOURCES = \
-	src/gettid.c \
 	src/properties.cpp \
 	src/properties_compat.c \
 	src/stdio.c \
 	src/string.c \
-	src/uio.c
+	src/uio.c \
+	src/unistd.c
 
 # bionic HEADERS
 # --------------
@@ -49,12 +49,12 @@ bionicincdir = $(includedir)/android/bionic-$(BIONIC_API_VERSION)/bionic
 bionicinc_HEADERS = \
 	include/bionic/bionic.h \
 	include/bionic/cdefs.h \
-	include/bionic/gettid.h \
 	include/bionic/properties.h \
 	include/bionic/properties_impl.h \
 	include/bionic/stdio.h \
 	include/bionic/string.h \
-	include/bionic/uio.h
+	include/bionic/uio.h \
+	include/bionic/unistd.h
 
 # bionicconfig.h
 # --------------

@@ -98,6 +98,22 @@ AC_CHECK_FUNCS([gettid], [],
   )]
 )
 
+# tgkill wrapper
+# --------------
+AC_CHECK_FUNCS([tgkill], [],
+  [AC_MSG_CHECKING([for syscall(SYS_tgkill)])
+  AC_COMPILE_IFELSE(
+    [AC_LANG_PROGRAM(
+[#define _GNU_SOURCE
+#include <unistd.h>
+#include <sys/syscall.h>],
+[pid_t tid = syscall(SYS_tgkill);]
+    )],
+    [AC_MSG_RESULT([yes])],
+    [AC_MSG_ERROR([no])]
+  )]
+)
+
 # Userspace I/O
 # -------------
 AC_CHECK_HEADERS([sys/uio.h])
@@ -139,6 +155,13 @@ _______EOF
   if test x$bionic_cfg_func_gettid != xyes; then
     cat >>$outfile <<_______EOF
 #define BIONIC_NEED_GETTID 1
+
+_______EOF
+  fi
+
+  if test x$bionic_cfg_func_tgkill != xyes; then
+    cat >>$outfile <<_______EOF
+#define BIONIC_NEED_TGKILL 1
 
 _______EOF
   fi
@@ -189,6 +212,10 @@ bionic_cfg_defines="
 
 if test x$ac_cv_func_gettid = xyes; then
   bionic_cfg_func_gettid=yes
+fi
+
+if test x$ac_cv_func_tgkill = xyes; then
+  bionic_cfg_func_tgkill=yes
 fi
 
 if test x$ac_cv_header_sys_uio_h = xyes; then

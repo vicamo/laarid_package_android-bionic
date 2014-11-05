@@ -22,10 +22,10 @@
 #include <bionicconfig.h>
 
 #include <bionic/cdefs.h>
-#include <bionic/gettid.h>
 #include <bionic/properties.h>
 #include <bionic/stdio.h>
 #include <bionic/string.h>
 #include <bionic/uio.h>
+#include <bionic/unistd.h>
 
 #endif /* __BIONIC_BIONIC_H__ */

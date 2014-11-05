@@ -14,22 +14,30 @@
  * limitations under the License.
  */
 
-#include "bionic/bionic.h"
+#ifndef __BIONIC_UNISTD_H__
+#define __BIONIC_UNISTD_H__
 
-#if defined(BIONIC_NEED_GETTID)
-
-#include <unistd.h>
-#include <sys/syscall.h>
-
-#if defined(__APPLE__)
-#define NR_GETTID SYS_thread_selfid
-#else
-#define NR_GETTID SYS_gettid
+#if !defined(__BIONIC_IN_BIONIC_H__)
+#error "Only <bionic/bionic.h> can be included directly."
 #endif
 
-pid_t gettid()
-{
-  return syscall(NR_GETTID);
-}
+#include <sys/types.h>
+#include <unistd.h>
 
-#endif /* BIONIC_NEED_GETTID */
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#if defined(BIONIC_NEED_GETTID)
+pid_t gettid(void);
+#endif
+
+#if defined(BIONIC_NEED_TGKILL)
+int tgkill(int tgid, int tid, int sig);
+#endif
+
+#ifdef __cplusplus
+} // extern "C"
+#endif
+
+#endif /* __BIONIC_UNISTD_H__ */
