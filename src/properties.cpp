@@ -123,7 +123,7 @@ struct prop_area {
     char data[0];
 
     prop_area(const uint32_t magic, const uint32_t version) :
-        magic(magic), version(version), serial(0) {
+        serial(0), magic(magic), version(version) {
         memset(reserved, 0, sizeof(reserved));
         // Allocate enough space for the root node.
         bytes_used = sizeof(prop_bt);

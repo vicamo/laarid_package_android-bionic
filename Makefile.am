@@ -21,6 +21,7 @@ AM_CFLAGS = \
 	-Wall -Werror
 
 AM_CXXFLAGS = \
+	-Wall -Werror \
 	-std=c++11
 
 libtool_opts = \
