@@ -1,3 +1,11 @@
+android-bionic (0.0.4) unstable; urgency=low
+
+  * add -Wall -Werror to AM_CXXFLAGS.
+  * add TEMP_FAILURE_RETRY macro
+  * add wrapper for strlcat.
+
+ -- You-Sheng Yang <vicamo@gmail.com>  Mon, 17 Nov 2014 16:47:42 +0800
+
 android-bionic (0.0.3) unstable; urgency=low
 
   * add wrapper for tgkill.
