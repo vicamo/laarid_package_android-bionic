@@ -41,6 +41,7 @@ libandroid_bionic_0_la_SOURCES = \
 	src/properties_compat.c \
 	src/stdio.c \
 	src/string.c \
+	src/strlcat.c \
 	src/uio.c \
 	src/unistd.c
 

@@ -118,7 +118,7 @@ AC_CHECK_FUNCS([tgkill], [],
 # -------------
 AC_CHECK_HEADERS([sys/uio.h])
 
-AC_CHECK_FUNCS([ funopen open_memstream strlcpy])
+AC_CHECK_FUNCS([ funopen open_memstream strlcat strlcpy])
 
 PKG_PROG_PKG_CONFIG
 
@@ -180,6 +180,13 @@ _______EOF
 _______EOF
   fi
 
+  if test x$bionic_cfg_func_strlcat != xyes; then
+    cat >>$outfile <<_______EOF
+#define BIONIC_NEED_STRLCAT 1
+
+_______EOF
+  fi
+
   if test x$bionic_cfg_func_strlcpy != xyes; then
     cat >>$outfile <<_______EOF
 #define BIONIC_NEED_STRLCPY 1
@@ -224,6 +231,10 @@ fi
 
 if test x$ac_cv_func_open_memstream = xyes; then
   bionic_cfg_func_open_memstream=yes
+fi
+
+if test x$ac_cv_func_strlcat = xyes; then
+  bionic_cfg_func_strlcat=yes
 fi
 
 if test x$ac_cv_func_strlcpy = xyes; then

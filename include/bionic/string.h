@@ -29,10 +29,17 @@
 extern "C" {
 #endif
 
+#if defined(BIONIC_NEED_STRLCAT)
+
+/* Declaration of strlcpy() for platforms that don't already have it. */
+size_t strlcat(char *__restrict dst, const char *__restrict src, size_t size);
+
+#endif /* BIONIC_NEED_STRLCAT */
+
 #if defined(BIONIC_NEED_STRLCPY)
 
 /* Declaration of strlcpy() for platforms that don't already have it. */
-size_t strlcpy(char *dst, const char *src, size_t size);
+size_t strlcpy(char *__restrict dst, const char *__restrict src, size_t size);
 
 #endif /* BIONIC_NEED_STRLCPY */
 
