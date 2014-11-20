@@ -18,6 +18,7 @@ Makefile.in
 /autom4te.cache
 /aclocal.m4
 /bionicconfig.h
+/build
 /build-aux
 /compile
 /configure
@@ -26,6 +27,7 @@ Makefile.in
 /config.log
 /config.lt
 /config.status
+/debian
 /depcomp
 /install-sh
 /libtool
