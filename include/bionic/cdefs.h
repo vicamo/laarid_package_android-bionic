@@ -23,7 +23,7 @@
 
 #include <sys/cdefs.h>
 
-#if defined(__GNUC__)
+#if defined(__glibc_unlikely)
 #define __predict_false(expr) __glibc_unlikely(expr)
 #define __predict_true(expr)  __glibc_likely(expr)
 #else
