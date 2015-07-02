@@ -15,7 +15,8 @@ Architecture: any
 Multi-Arch: same
 Depends: libandroid-bionic0 (= ${binary:Version}), ${misc:Depends}
 Description: Android Bionic Library - development
- This package contains bits from Android bionic libc implementation that are not available in libc.
+ This package contains bits from Android bionic libc implementation that are not
+ available in libc.
  .
  This package contains the development files.
 
@@ -27,4 +28,5 @@ Multi-Arch: same
 Pre-Depends: ${misc:Pre-Depends}
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: Android Bionic Library
- This package contains bits from Android bionic libc implementation that are not available in libc.
+ This package contains bits from Android bionic libc implementation that are not
+ available in libc.
