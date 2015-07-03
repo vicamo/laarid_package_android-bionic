@@ -1,5 +1,5 @@
-# android-bionic versioning
-# -------------------------
+# Bionic versioning
+# -----------------
 # To make new release:
 #
 #   bionic_micro_version += 1
@@ -23,15 +23,15 @@
 #   bionic_micro_version = 0
 #   bionic_interface_revision = 0
 m4_define([bionic_major_version], [0])
-m4_define([bionic_minor_version], [0])
-m4_define([bionic_micro_version], [4])
-m4_define([bionic_interface_revision], [3])
+m4_define([bionic_minor_version], [1])
+m4_define([bionic_micro_version], [0])
+m4_define([bionic_interface_revision], [0])
 m4_define([bionic_api_version], [bionic_major_version.0])
 m4_define([bionic_release_number], [bionic_major_version])
 m4_define([bionic_version],
   [bionic_major_version.bionic_minor_version.bionic_micro_version])
 
-AC_INIT([android-bionic], [bionic_version],
+AC_INIT([bionic], [bionic_version],
   [https://github.com/laarid/platform_bionic/issues], [],
   [https://github.com/laarid/platform_bionic])
 
@@ -244,6 +244,6 @@ fi
 
 AC_CONFIG_FILES([
   Makefile
-  android-bionic-$BIONIC_API_VERSION.pc
+  bionic-$BIONIC_API_VERSION.pc
 ])
 AC_OUTPUT

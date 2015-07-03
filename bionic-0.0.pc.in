@@ -3,8 +3,8 @@ exec_prefix=@exec_prefix@
 libdir=@libdir@
 includedir=@includedir@
 
-Name: libandroid-bionic-@BIONIC_RELEASE_NUMBER@
-Description: libandroid-bionic-@BIONIC_RELEASE_NUMBER@
+Name: libbionic
+Description: libbionic
 Version: @VERSION@
-Libs: -L${libdir} -landroid-bionic-@BIONIC_RELEASE_NUMBER@
+Libs: -L${libdir} -lbionic
 Cflags: -I${includedir}/android/bionic-@BIONIC_API_VERSION@ -I${libdir}/android/bionic-@BIONIC_API_VERSION@/include

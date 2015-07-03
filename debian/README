@@ -1,5 +1,5 @@
-The Debian Package libandroid-bionic0
--------------------------------------
+The Debian Package libbionic0
+-----------------------------
 
 This package contains bits from Android bionic libc implementation
 that are not available in libc.
