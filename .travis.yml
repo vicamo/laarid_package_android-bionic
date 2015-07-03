@@ -16,3 +16,14 @@ install:
 script:
 - env
 - debuild --preserve-env --preserve-envvar PATH -i -us -uc -b
+
+deploy:
+  provider: releases
+  api-key:
+    secure: hb5ks+djqhJ7RqVyt0JiQvJv3o6YWFhPq+C7ZNnmJcZm1Rn64VyEW4GUIIWa4cSxJzZCHQfIpigV5HUrn5Y3hjYgYc15vow2p/zNdI/EUIJjjQ2t765dEAKJKhXsRlnEncczMMHaigrtbGUUn3byhXNGKmKqDuNdwJiHbSdQgoU=
+  file:
+  - $TRAVIS_BUILD_DIR/../libbionic0_0.1.0_amd64.deb
+  - $TRAVIS_BUILD_DIR/../libbionic0-dev_0.1.0_amd64.deb
+  skip_cleanup: true
+  on:
+    tags: true
