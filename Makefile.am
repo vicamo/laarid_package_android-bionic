@@ -5,7 +5,7 @@ ACLOCAL_AMFLAGS = -I m4 ${ACLOCAL_FLAGS}
 EXTRA_DIST = \
 	LICENSE \
 	README.md \
-	android-bionic-$(BIONIC_API_VERSION).pc.in
+	bionic-$(BIONIC_API_VERSION).pc.in
 
 DISTCLEANFILES = \
 	bionicconfig.h \
@@ -30,13 +30,13 @@ libtool_opts = \
 	-rpath $(libdir)
 
 lib_LTLIBRARIES = \
-	libandroid-bionic-0.la
+	libbionic-0.la
 
-# libandroid-bionic.la
-# --------------------
-libandroid_bionic_0_la_LDFLAGS = \
+# libbionic.la
+# ------------
+libbionic_0_la_LDFLAGS = \
 	$(libtool_opts)
-libandroid_bionic_0_la_SOURCES = \
+libbionic_0_la_SOURCES = \
 	src/properties.cpp \
 	src/properties_compat.c \
 	src/stdio.c \
@@ -68,7 +68,7 @@ nodist_bioniccfginc_HEADERS = \
 # ---------------------
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = \
-	android-bionic-$(BIONIC_API_VERSION).pc
+	bionic-$(BIONIC_API_VERSION).pc
 
 $(pkgconfig_DATA): config.status
 
