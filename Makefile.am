@@ -30,13 +30,13 @@ libtool_opts = \
 	-rpath $(libdir)
 
 lib_LTLIBRARIES = \
-	libbionic-0.la
+	libbionic.la
 
 # libbionic.la
 # ------------
-libbionic_0_la_LDFLAGS = \
+libbionic_la_LDFLAGS = \
 	$(libtool_opts)
-libbionic_0_la_SOURCES = \
+libbionic_la_SOURCES = \
 	src/properties.cpp \
 	src/properties_compat.c \
 	src/stdio.c \
