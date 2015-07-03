@@ -13,4 +13,6 @@ install:
 - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 90
 - mk-build-deps -i -s sudo
 
-script: debuild --preserve-env --preserve-envvar PATH -i -us -uc -b
+script:
+- env
+- debuild --preserve-env --preserve-envvar PATH -i -us -uc -b
