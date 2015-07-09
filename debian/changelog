@@ -1,3 +1,10 @@
+bionic (0.1.1) testing; urgency=low
+
+  * bump version to 0.1.1
+  * install header files to /usr/include/bionic-0.0
+
+ -- You-Sheng Yang <vicamo@gmail.com>  Thu, 9 Jul 2015 14:15:13 +0800
+
 bionic (0.1.0) unstable; urgency=low
 
   * rename source/binary packages
