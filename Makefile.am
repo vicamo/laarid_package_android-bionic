@@ -47,7 +47,7 @@ libbionic_la_SOURCES = \
 
 # bionic HEADERS
 # --------------
-bionicincdir = $(includedir)/android/bionic-$(BIONIC_API_VERSION)/bionic
+bionicincdir = $(includedir)/bionic-$(BIONIC_API_VERSION)/bionic
 bionicinc_HEADERS = \
 	include/bionic/bionic.h \
 	include/bionic/cdefs.h \
@@ -60,7 +60,7 @@ bionicinc_HEADERS = \
 
 # bionicconfig.h
 # --------------
-bioniccfgincdir = $(libdir)/android/bionic-$(BIONIC_API_VERSION)/include
+bioniccfgincdir = $(libdir)/bionic-$(BIONIC_API_VERSION)/include
 nodist_bioniccfginc_HEADERS = \
 	bionicconfig.h
 
