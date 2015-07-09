@@ -7,4 +7,4 @@ Name: libbionic
 Description: libbionic
 Version: @VERSION@
 Libs: -L${libdir} -lbionic
-Cflags: -I${includedir}/android/bionic-@BIONIC_API_VERSION@ -I${libdir}/android/bionic-@BIONIC_API_VERSION@/include
+Cflags: -I${includedir}/bionic-@BIONIC_API_VERSION@ -I${libdir}/bionic-@BIONIC_API_VERSION@/include
