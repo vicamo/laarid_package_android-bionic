@@ -10,3 +10,11 @@ include /usr/share/dpkg/default.mk
 # main packaging script based on dh7 syntax
 %:
 	dh $@ --with autoreconf --builddirectory=build
+
+.PHONY: override_dh_strip
+override_dh_strip:
+	dh_strip --dbg-package=libbionic0-dbg
+
+.PHONY: override_dh_installdocs
+override_dh_installdocs:
+	dh_installdocs --link-doc=libbionic0
