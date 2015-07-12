@@ -1,3 +1,9 @@
+android-bionic (0.0.4-1) stretch; urgency=low
+
+  * fix armel build
+
+ -- You-Sheng Yang <vicamo@gmail.com>  Sun, 12 Jul 2015 11:51:02 +0800
+
 android-bionic (0.0.4) unstable; urgency=low
 
   * add -Wall -Werror to AM_CXXFLAGS.
