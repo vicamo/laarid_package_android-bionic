@@ -1,18 +1,49 @@
+dist: trusty
+sudo: required
+services:
+- docker
 language: cpp
+
+env:
+  matrix:
+  - IMAGE_ARCH=amd64
+  - IMAGE_ARCH=arm64
+  - IMAGE_ARCH=armel
+  - IMAGE_ARCH=armhf
+  - IMAGE_ARCH=i386
+  - IMAGE_ARCH=mips
+  - IMAGE_ARCH=mips64el
+  - IMAGE_ARCH=mipsel
+  - IMAGE_ARCH=ppc64el
+  - IMAGE_ARCH=s390x
+  global:
+  - DOCKER_EXEC_ROOT="sudo docker exec -it -u root test_container"
+  - DOCKER_EXEC="sudo docker exec -it test_container"
+
+branches:
+  only:
+  - master
+  - stable
+  - tags
+
+addons:
+  apt:
+    sources:
+    - sourceline: 'deb http://archive.ubuntu.com/ubuntu/ devel universe'
+    packages:
+    - binfmt-support
+    - qemu-user-static
 
 cache:
 - apt
-- ccache
 
 before_install:
-- sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
-- sudo apt-get update -qq
+- sudo docker run -d -i -t --name test_container -v ${TRAVIS_BUILD_DIR}:${TRAVIS_BUILD_DIR} laarid/devel:${IMAGE_ARCH} /bin/bash
 
 install:
-- sudo apt-get install -qq devscripts equivs gcc-4.8 g++-4.8
-- sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 90
-- mk-build-deps -i -s sudo
+- ${DOCKER_EXEC_ROOT} apt-get update -qq
+- ${DOCKER_EXEC_ROOT} mk-build-deps -i -s sudo -t 'apt-get -o Debug::pkgProblemResolver=yes --no-install-recommends -y' ${TRAVIS_BUILD_DIR}/debian/control
 
 script:
-- env
-- debuild --preserve-env --preserve-envvar PATH -i -us -uc -b
+- ${DOCKER_EXEC_ROOT} chmod 777 $(dirname ${TRAVIS_BUILD_DIR})
+- ${DOCKER_EXEC} /bin/sh -c "cd ${TRAVIS_BUILD_DIR}; debuild --preserve-env --preserve-envvar PATH -i -us -uc -b"
