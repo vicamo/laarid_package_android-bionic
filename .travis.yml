@@ -19,12 +19,16 @@ env:
   global:
   - DOCKER_EXEC_ROOT="sudo docker exec -it -u root test_container"
   - DOCKER_EXEC="sudo docker exec -it test_container"
+  - DOCKER_EXEC_NOTTY="sudo docker exec test_container"
+  - BINTRAY_USER=laarid
+  - BINTRAY_REPO=main
+  - BINTRAY_DESC="Android Bionic library"
+  - BINTRAY_COMPONENT=main
 
 branches:
   only:
   - master
-  - stable
-  - tags
+  - /^v\d+\.\d+\.\d+/
 
 addons:
   apt:
@@ -38,12 +42,37 @@ cache:
 - apt
 
 before_install:
-- sudo docker run -d -i -t --name test_container -v ${TRAVIS_BUILD_DIR}:${TRAVIS_BUILD_DIR} laarid/devel:${IMAGE_ARCH} /bin/bash
+- sudo docker run -d -i -t --name test_container -v ${TRAVIS_BUILD_DIR%${TRAVIS_REPO_SLUG}}:${TRAVIS_BUILD_DIR%${TRAVIS_REPO_SLUG}} laarid/devel:${IMAGE_ARCH} /bin/bash
 
 install:
 - ${DOCKER_EXEC_ROOT} apt-get update -qq
 - ${DOCKER_EXEC_ROOT} mk-build-deps -i -s sudo -t 'apt-get -o Debug::pkgProblemResolver=yes --no-install-recommends -y' ${TRAVIS_BUILD_DIR}/debian/control
 
 script:
-- ${DOCKER_EXEC_ROOT} chmod 777 $(dirname ${TRAVIS_BUILD_DIR})
 - ${DOCKER_EXEC} /bin/sh -c "cd ${TRAVIS_BUILD_DIR}; debuild --preserve-env --preserve-envvar PATH -i -us -uc -b"
+
+before_deploy:
+- |
+  cat debian/bintray.json.in | \
+  sed -e "s#@BINTRAY_PACKAGE@#$(cat debian/control | grep ^Source: | awk '{print $2}')#g" \
+  -e "s#@BINTRAY_USER@#${BINTRAY_USER}#g" \
+  -e "s#@BINTRAY_REPO@#${BINTRAY_REPO}#g" \
+  -e "s#@BINTRAY_DESC@#${BINTRAY_DESC}#g" \
+  -e "s#@GITHUB_REPO@#${TRAVIS_REPO_SLUG}#g" \
+  -e "s#@BINTRAY_VERSION@#${TRAVIS_TAG}#g" \
+  -e "s#@BINTRAY_RELEASE_DATE@#$(cat debian/changelog | grep -m 1 '^ -- ' | sed 's,^.*  ,,')#g" \
+  -e "s#@BINTRAY_OUTDIR@#$(dirname ${TRAVIS_BUILD_DIR})#g" \
+  -e "s#@BINTRAY_SUITE@#$(${DOCKER_EXEC_NOTTY} cat /etc/apt/sources.list | grep -m 1 '^deb ' | awk '{print $3}')#g" \
+  -e "s#@BINTRAY_COMPONENT@#${BINTRAY_COMPONENT}#g" \
+  -e "s#@BINTRAY_ARCH@#$(dpkg --print-architecture)#g" \
+  > debian/bintray.json
+- cat debian/bintray.json
+
+deploy:
+- provider: bintray
+  file: debian/bintray.json
+  user: vicamo
+  key:
+    secure: "XVnXzz3GD87gjGb90AeyiN6s8qyWdhhhiq0CEfn4k73o0kA+VSoAcozsXq1wmYHyu0OTLyjFWgzWdAGJKNRldRpS54lIZ0BzyycvZhTDw8+ANMHE2L4z2Bski4nbXtrYX0mkBl+OHLIVQid1YnvNnHq4RoIl0iJu7tR0RNP6rR+DPLAlEtVuL1TCNodJhApwAfGZ/ZMuBdE7WH1xTH5TVTHDvsdbOpyhmwVicQSa1NqRNdMeontLkqQ1Yr9IxTnyqn7uwit4DvK5gQ8CUrTCzQ9lBZMeP7ucCPNvxBVbGmbCIko19U2PoECDdmIQ4bB9yRofPgv29XJyzEN4S+QG8tyhhidmZJI5Syxi3LG3bPrnsFdXlpYdGPh+nzT2F3aD5zzDfXpUlx073fTeOCjoTmQzRZU6y7B5qnp+xt1Uf0J6FRNePLAv/3Q80xeQJvpvJssDJgfOALdyvjZFRHNxP+h/WqqnblnDb+x2etgjIUH9zro64j+3rTQs7l/2FxbYsj5/QexNSRxPC/eh40CZgQLJ+MVYFz+nZ7C3dzHQhbK2yvIp/GQieCh1BuQpvtRjFHOMPxIUaOXQ9ezjUOjP7LmWQTebo4tLZ4geRC2Ywm4tVMbVBy3WjWUi2wHSCNbFQKQPxD6570ejojo0CNglv0Jh9fqR8jj4gVqDjrYkNog="
+  on:
+    tags: true
