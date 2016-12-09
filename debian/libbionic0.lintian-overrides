@@ -1,2 +1,2 @@
-# Only mips variants have this error. See https://github.com/laarid/package_bionic/issues/2
+# Only mips variants have this error. See https://github.com/laarid/package_android-bionic/issues/2
 libbionic0 [mips mipsel mips64el] binary: shlib-without-PT_GNU_STACK-section usr/lib*/libbionic.so.*
