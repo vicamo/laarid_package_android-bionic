@@ -1,5 +1,5 @@
-bionic for Debian
------------------
+android-bionic for Debian
+-------------------------
 
 This package contains bits from Android bionic libc implementation
 that are not available in libc.

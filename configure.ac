@@ -24,16 +24,16 @@
 #   bionic_interface_revision = 0
 m4_define([bionic_major_version], [0])
 m4_define([bionic_minor_version], [1])
-m4_define([bionic_micro_version], [2])
+m4_define([bionic_micro_version], [3])
 m4_define([bionic_interface_revision], [0])
 m4_define([bionic_api_version], [bionic_major_version.0])
 m4_define([bionic_release_number], [bionic_major_version])
 m4_define([bionic_version],
   [bionic_major_version.bionic_minor_version.bionic_micro_version])
 
-AC_INIT([bionic], [bionic_version],
-  [https://github.com/laarid/platform_bionic/issues], [],
-  [https://github.com/laarid/platform_bionic])
+AC_INIT([android-bionic], [bionic_version],
+  [https://github.com/laarid/package_android-bionic/issues], [],
+  [https://github.com/laarid/package_android-bionic])
 
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_SRCDIR([include/bionic/bionic.h])

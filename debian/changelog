@@ -1,3 +1,11 @@
+android-bionic (0.1.3) testing; urgency=low
+
+  * enable parallel build
+  * [mips mipsel mips64el] suppress shlib-without-PT_GNU_STACK-section lintian
+    error
+
+ -- You-Sheng Yang <vicamo@gmail.com>  Fri, 9 Dec 2016 15:52:00 +0800
+
 bionic (0.1.2) testing; urgency=low
 
   * fix armel build
