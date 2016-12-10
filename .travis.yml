@@ -23,6 +23,7 @@ env:
   - BINTRAY_USER=laarid
   - BINTRAY_REPO=main
   - BINTRAY_DESC="Android Bionic library"
+  - BINTRAY_POOLABBR=a
   - BINTRAY_COMPONENT=main
 
 branches:
@@ -59,14 +60,14 @@ before_deploy:
   -e "s#@BINTRAY_REPO@#${BINTRAY_REPO}#g" \
   -e "s#@BINTRAY_DESC@#${BINTRAY_DESC}#g" \
   -e "s#@GITHUB_REPO@#${TRAVIS_REPO_SLUG}#g" \
-  -e "s#@BINTRAY_VERSION@#${TRAVIS_TAG}#g" \
+  -e "s,@BINTRAY_VERSION@,${TRAVIS_TAG#v},g" \
   -e "s#@BINTRAY_RELEASE_DATE@#$(cat debian/changelog | grep -m 1 '^ -- ' | sed 's,^.*  ,,')#g" \
   -e "s#@BINTRAY_OUTDIR@#$(dirname ${TRAVIS_BUILD_DIR})#g" \
+  -e "s#@BINTRAY_POOLABBR@#${BINTRAY_POOLABBR}#g" \
   -e "s#@BINTRAY_SUITE@#$(${DOCKER_EXEC_NOTTY} cat /etc/apt/sources.list | grep -m 1 '^deb ' | awk '{print $3}')#g" \
   -e "s#@BINTRAY_COMPONENT@#${BINTRAY_COMPONENT}#g" \
-  -e "s#@BINTRAY_ARCH@#$(dpkg --print-architecture)#g" \
-  > debian/bintray.json
-- cat debian/bintray.json
+  -e "s#@BINTRAY_ARCH@#$(dpkg --print-architecture)#g" | \
+  tee debian/bintray.json
 
 deploy:
 - provider: bintray
