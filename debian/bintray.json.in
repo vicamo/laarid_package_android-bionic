@@ -16,15 +16,15 @@
 
     "version": {
         "name": "@BINTRAY_VERSION@",
-        "desc": "@BINTRAY_VERSION@ release",
+        "desc": "v@BINTRAY_VERSION@ release",
         "released": "@BINTRAY_RELEASE_DATE@",
-        "vcs_tag": "@BINTRAY_VERSION@",
+        "vcs_tag": "v@BINTRAY_VERSION@",
         "gpgSign": true
     },
 
     "files": [{
         "includePattern": "@BINTRAY_OUTDIR@/([^/]+\\.deb)",
-        "uploadPattern": "$1",
+        "uploadPattern": "pool/@BINTRAY_COMPONENT@/@BINTRAY_POOLABBR@/@BINTRAY_PACKAGE@/$1",
         "matrixParams": {
             "deb_distribution": "@BINTRAY_SUITE@",
             "deb_component": "@BINTRAY_COMPONENT@",
