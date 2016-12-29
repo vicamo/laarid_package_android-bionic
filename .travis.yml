@@ -22,6 +22,7 @@ env:
   - DOCKER_EXEC_NOTTY="sudo docker exec test_container"
   - BINTRAY_USER=laarid
   - BINTRAY_REPO=main
+  - BINTRAY_DESC="Android Bionic library"
   - BINTRAY_COMPONENT=main
 
 branches:
@@ -58,7 +59,7 @@ before_deploy:
   sed -e "s#@BINTRAY_PACKAGE@#$(cat debian/control | grep ^Source: | awk '{print $2}')#g" \
   -e "s#@BINTRAY_USER@#${BINTRAY_USER}#g" \
   -e "s#@BINTRAY_REPO@#${BINTRAY_REPO}#g" \
-  -e "s#@BINTRAY_DESC@#$(cat debian/control | grep -m1 ^Description: | cut -d ' ' -f2-)#g" \
+  -e "s#@BINTRAY_DESC@#${BINTRAY_DESC}#g" \
   -e "s#@GITHUB_REPO@#${TRAVIS_REPO_SLUG}#g" \
   -e "s,@BINTRAY_VERSION@,${TRAVIS_TAG#v},g" \
   -e "s#@BINTRAY_RELEASE_DATE@#$(cat debian/changelog | grep -m 1 '^ -- ' | sed 's,^.*  ,,')#g" \
