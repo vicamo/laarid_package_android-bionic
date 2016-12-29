@@ -26,7 +26,6 @@
  * SUCH DAMAGE.
  */
 #include <new>
-#include <atomic>
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -47,6 +46,7 @@
 #include <sys/types.h>
 #include <netinet/in.h>
 #include <linux/limits.h>
+#include <unistd.h>
 
 #include "bionic/bionic.h"
 #define _REALLY_INCLUDE_BIONIC_PROPERTIES_IMPL_H_
@@ -83,16 +83,6 @@ struct prop_bt {
     uint8_t namelen;
     uint8_t reserved[3];
 
-    // TODO: The following fields should be declared as atomic_uint32_t.
-    // They should be assigned to with release semantics, instead of using
-    // explicit fences.  Unfortunately, the read accesses are generally
-    // followed by more dependent read accesses, and the dependence
-    // is assumed to enforce memory ordering.  Which it does on supported
-    // hardware.  This technically should use memory_order_consume, if
-    // that worked as intended.
-    // We should also avoid rereading these fields redundantly, since not
-    // all processor implementations ensure that multiple loads from the
-    // same field are carried out in the right order.
     volatile uint32_t prop;
 
     volatile uint32_t left;
@@ -106,8 +96,7 @@ struct prop_bt {
         this->namelen = name_length;
         memcpy(this->name, name, name_length);
         this->name[name_length] = '\0';
-        ANDROID_MEMBAR_FULL();  // TODO: Instead use a release store
-                                // for subsequent pointer assignment.
+        ANDROID_MEMBAR_FULL();
     }
 
 private:
@@ -116,7 +105,7 @@ private:
 
 struct prop_area {
     uint32_t bytes_used;
-    atomic<uint_least32_t> serial;
+    volatile uint32_t serial;
     uint32_t magic;
     uint32_t version;
     uint32_t reserved[28];
@@ -134,7 +123,7 @@ private:
 };
 
 struct prop_info {
-    atomic<uint_least32_t> serial;
+    volatile uint32_t serial;
     char value[PROP_VALUE_MAX];
     char name[0];
 
@@ -145,8 +134,7 @@ struct prop_info {
         this->name[namelen] = '\0';
         memcpy(this->value, value, valuelen);
         this->value[valuelen] = '\0';
-        ANDROID_MEMBAR_FULL();  // TODO: Instead use a release store
-                                // for subsequent point assignment.
+        ANDROID_MEMBAR_FULL();
     }
 private:
     DISALLOW_COPY_AND_ASSIGN(prop_info);
@@ -200,6 +188,14 @@ static int map_prop_area_rw()
              */
             abort();
         }
+        return -1;
+    }
+
+    // TODO: Is this really required ? Does android run on any kernels that
+    // don't support O_CLOEXEC ?
+    const int ret = fcntl(fd, F_SETFD, FD_CLOEXEC);
+    if (ret < 0) {
+        close(fd);
         return -1;
     }
 
@@ -265,9 +261,18 @@ static int map_fd_ro(const int fd) {
 
 static int map_prop_area()
 {
-    int fd = open(property_filename, O_CLOEXEC | O_NOFOLLOW | O_RDONLY);
+    int fd(open(property_filename, O_RDONLY | O_NOFOLLOW | O_CLOEXEC));
+    if (fd >= 0) {
+        /* For old kernels that don't support O_CLOEXEC */
+        const int ret = fcntl(fd, F_SETFD, FD_CLOEXEC);
+        if (ret < 0) {
+            close(fd);
+            return -1;
+        }
+    }
+
     bool close_fd = true;
-    if (fd == -1 && errno == ENOENT) {
+    if ((fd < 0) && (errno == ENOENT)) {
         /*
          * For backwards compatibility, if the file doesn't
          * exist, we use the environment to get the file descriptor.
@@ -596,14 +601,6 @@ const prop_info *__system_property_find(const char *name)
     return find_property(root_node(), name, strlen(name), NULL, 0, false);
 }
 
-// The C11 standard doesn't allow atomic loads from const fields,
-// though C++11 does.  Fudge it until standards get straightened out.
-static inline uint_least32_t load_const_atomic(const atomic<uint_least32_t>* s,
-                                               memory_order mo) {
-    atomic<uint_least32_t>* non_const_s = const_cast<atomic<uint_least32_t>*>(s);
-    return atomic_load_explicit(non_const_s, mo);
-}
-
 int __system_property_read(const prop_info *pi, char *name, char *value)
 {
     if (__predict_false(compat_mode)) {
@@ -611,20 +608,11 @@ int __system_property_read(const prop_info *pi, char *name, char *value)
     }
 
     while (true) {
-        uint32_t serial = __system_property_serial(pi); // acquire semantics
+        uint32_t serial = __system_property_serial(pi);
         size_t len = SERIAL_VALUE_LEN(serial);
         memcpy(value, pi->value, len + 1);
-        // TODO: Fix the synchronization scheme here.
-        // There is no fully supported way to implement this kind
-        // of synchronization in C++11, since the memcpy races with
-        // updates to pi, and the data being accessed is not atomic.
-        // The following fence is unintuitive, but would be the
-        // correct one if memcpy used memory_order_relaxed atomic accesses.
-        // In practice it seems unlikely that the generated code would
-        // would be any different, so this should be OK.
-        atomic_thread_fence(memory_order_acquire);
-        if (serial ==
-                load_const_atomic(&(pi->serial), memory_order_relaxed)) {
+        ANDROID_MEMBAR_FULL();
+        if (serial == pi->serial) {
             if (name != 0) {
                 strcpy(name, pi->name);
             }
@@ -673,24 +661,14 @@ int __system_property_update(prop_info *pi, const char *value, unsigned int len)
     if (len >= PROP_VALUE_MAX)
         return -1;
 
-    uint32_t serial = atomic_load_explicit(&pi->serial, memory_order_relaxed);
-    serial |= 1;
-    atomic_store_explicit(&pi->serial, serial, memory_order_relaxed);
-    // The memcpy call here also races.  Again pretend it
-    // used memory_order_relaxed atomics, and use the analogous
-    // counterintuitive fence.
-    atomic_thread_fence(memory_order_release);
+    pi->serial = pi->serial | 1;
+    ANDROID_MEMBAR_FULL();
     memcpy(pi->value, value, len + 1);
-    atomic_store_explicit(
-        &pi->serial,
-        (len << 24) | ((serial + 1) & 0xffffff),
-        memory_order_release);
+    ANDROID_MEMBAR_FULL();
+    pi->serial = (len << 24) | ((pi->serial + 1) & 0xffffff);
     __futex_wake(&pi->serial, INT32_MAX);
 
-    atomic_store_explicit(
-        &pa->serial,
-        atomic_load_explicit(&pa->serial, memory_order_relaxed) + 1,
-        memory_order_release);
+    pa->serial++;
     __futex_wake(&pa->serial, INT32_MAX);
 
     return 0;
@@ -713,25 +691,17 @@ int __system_property_add(const char *name, unsigned int namelen,
     if (!pi)
         return -1;
 
-    // There is only a single mutator, but we want to make sure that
-    // updates are visible to a reader waiting for the update.
-    atomic_store_explicit(
-        &pa->serial,
-        atomic_load_explicit(&pa->serial, memory_order_relaxed) + 1,
-        memory_order_release);
+    pa->serial++;
     __futex_wake(&pa->serial, INT32_MAX);
     return 0;
 }
 
-// Wait for non-locked serial, and retrieve it with acquire semantics.
 unsigned int __system_property_serial(const prop_info *pi)
 {
-    uint32_t serial = load_const_atomic(&pi->serial, memory_order_acquire);
+    uint32_t serial = pi->serial;
     while (SERIAL_DIRTY(serial)) {
-        __futex_wait(const_cast<volatile void *>(
-                        reinterpret_cast<const void *>(&pi->serial)),
-                     serial, NULL);
-        serial = load_const_atomic(&pi->serial, memory_order_acquire);
+        __futex_wait(const_cast<volatile uint32_t*>(&pi->serial), serial, NULL);
+        serial = pi->serial;
     }
     return serial;
 }
@@ -739,14 +709,12 @@ unsigned int __system_property_serial(const prop_info *pi)
 unsigned int __system_property_wait_any(unsigned int serial)
 {
     prop_area *pa = __system_property_area__;
-    uint32_t my_serial;
 
     do {
         __futex_wait(&pa->serial, serial, NULL);
-        my_serial = atomic_load_explicit(&pa->serial, memory_order_acquire);
-    } while (my_serial == serial);
+    } while (pa->serial == serial);
 
-    return my_serial;
+    return pa->serial;
 }
 
 const prop_info *__system_property_find_nth(unsigned n)
