@@ -42,7 +42,15 @@ cache:
 - apt
 
 before_install:
-- sudo docker run -d -i -t --name test_container -v ${TRAVIS_BUILD_DIR%${TRAVIS_REPO_SLUG}}:${TRAVIS_BUILD_DIR%${TRAVIS_REPO_SLUG}} laarid/devel:${IMAGE_ARCH} /bin/bash
+- sudo docker pull laarid/devel:${IMAGE_ARCH}
+- sudo docker images
+- |
+  sudo docker run --detach --tty \
+    --name test_container \
+    --volume ${TRAVIS_BUILD_DIR%${TRAVIS_REPO_SLUG}}:${TRAVIS_BUILD_DIR%${TRAVIS_REPO_SLUG}} \
+    --add-host dl.bintray.com:$(nslookup dl.bintray.com | grep -m1 -A1 Name: | grep Address: | awk '{print $2}') \
+    laarid/devel:${IMAGE_ARCH} \
+    /bin/bash
 
 install:
 - ${DOCKER_EXEC_ROOT} apt-get update -qq
