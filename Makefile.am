@@ -5,11 +5,24 @@ ACLOCAL_AMFLAGS = -I m4 ${ACLOCAL_FLAGS}
 EXTRA_DIST = \
 	LICENSE \
 	README.md \
-	bionic-$(BIONIC_API_VERSION).pc.in
-
+	android-bionic-$(BIONIC_API_VERSION).pc.in
+BUILT_SOURCES =
+CLEANFILES =
 DISTCLEANFILES = \
 	bionicconfig.h \
 	config.lt
+MAINTAINERCLEANFILES = \
+	$(GITIGNORE_MAINTAINERCLEANFILES_TOPLEVEL) \
+	$(GITIGNORE_MAINTAINERCLEANFILES_M4_LIBTOOL) \
+	$(GITIGNORE_MAINTAINERCLEANFILES_MAKEFILE_IN)
+
+DISTCHECK_CONFIGURE_FLAGS = \
+	--disable-maintainer-mode
+
+GITIGNOREFILES = \
+	build \
+	debian \
+	$(DIST_ARCHIVES)
 
 # Common/global flags
 # -------------------
@@ -30,13 +43,21 @@ libtool_opts = \
 	-rpath $(libdir)
 
 lib_LTLIBRARIES = \
-	libbionic.la
+	libandroid-bionic.la
 
-# libbionic.la
+# libandroid-bionic.la
 # ------------
-libbionic_la_LDFLAGS = \
+libandroid_bionic_la_LDFLAGS = \
 	$(libtool_opts)
-libbionic_la_SOURCES = \
+libandroid_bionic_la_SOURCES = \
+	src/atomic_arm.h \
+	src/atomic_arm64.h \
+	src/atomic_gcc_builtin.h \
+	src/atomic_inline.h \
+	src/atomic_mips.h \
+	src/atomic_x86.h \
+	src/futex.h \
+	src/macros.h \
 	src/properties.cpp \
 	src/properties_compat.c \
 	src/stdio.c \
@@ -47,7 +68,7 @@ libbionic_la_SOURCES = \
 
 # bionic HEADERS
 # --------------
-bionicincdir = $(includedir)/bionic-$(BIONIC_API_VERSION)/bionic
+bionicincdir = $(includedir)/android/bionic-$(BIONIC_API_VERSION)/bionic
 bionicinc_HEADERS = \
 	include/bionic/bionic.h \
 	include/bionic/cdefs.h \
@@ -60,7 +81,7 @@ bionicinc_HEADERS = \
 
 # bionicconfig.h
 # --------------
-bioniccfgincdir = $(libdir)/bionic-$(BIONIC_API_VERSION)/include
+bioniccfgincdir = $(libdir)/android/bionic-$(BIONIC_API_VERSION)/include
 nodist_bioniccfginc_HEADERS = \
 	bionicconfig.h
 
@@ -68,9 +89,15 @@ nodist_bioniccfginc_HEADERS = \
 # ---------------------
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = \
-	bionic-$(BIONIC_API_VERSION).pc
+	android-bionic-$(BIONIC_API_VERSION).pc
 
 $(pkgconfig_DATA): config.status
 
+EXTRA_DIST += $(pkgconfig_DATA:.pc=.pc.in)
 DISTCLEANFILES += \
 	$(pkgconfig_DATA)
+
+CLEANFILES += $(BUILT_SOURCES)
+GITIGNOREFILES += $(BUILT_SOURCES)
+
+-include $(top_srcdir)/git.mk
