@@ -31,11 +31,12 @@ AM_CPPFLAGS = \
 	-I$(top_srcdir)/include
 
 AM_CFLAGS = \
-	-Wall -Werror
+	-Wall -Werror \
+	-std=gnu99
 
 AM_CXXFLAGS = \
 	-Wall -Werror \
-	-std=c++11
+	-std=gnu++11
 
 libtool_opts = \
 	-version-info $(LT_VERSION_INFO) \
@@ -50,12 +51,6 @@ lib_LTLIBRARIES = \
 libandroid_bionic_la_LDFLAGS = \
 	$(libtool_opts)
 libandroid_bionic_la_SOURCES = \
-	src/atomic_arm.h \
-	src/atomic_arm64.h \
-	src/atomic_gcc_builtin.h \
-	src/atomic_inline.h \
-	src/atomic_mips.h \
-	src/atomic_x86.h \
 	src/futex.h \
 	src/macros.h \
 	src/properties.cpp \
