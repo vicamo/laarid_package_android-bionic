@@ -5,7 +5,7 @@ ACLOCAL_AMFLAGS = -I m4 ${ACLOCAL_FLAGS}
 EXTRA_DIST = \
 	LICENSE \
 	README.md \
-	bionic-$(BIONIC_API_VERSION).pc.in
+	android-bionic-$(BIONIC_API_VERSION).pc.in
 
 DISTCLEANFILES = \
 	bionicconfig.h \
@@ -30,13 +30,13 @@ libtool_opts = \
 	-rpath $(libdir)
 
 lib_LTLIBRARIES = \
-	libbionic.la
+	libandroid-bionic.la
 
-# libbionic.la
+# libandroid-bionic.la
 # ------------
-libbionic_la_LDFLAGS = \
+libandroid_bionic_la_LDFLAGS = \
 	$(libtool_opts)
-libbionic_la_SOURCES = \
+libandroid_bionic_la_SOURCES = \
 	src/properties.cpp \
 	src/properties_compat.c \
 	src/stdio.c \
@@ -47,7 +47,7 @@ libbionic_la_SOURCES = \
 
 # bionic HEADERS
 # --------------
-bionicincdir = $(includedir)/bionic-$(BIONIC_API_VERSION)/bionic
+bionicincdir = $(includedir)/android/bionic-$(BIONIC_API_VERSION)/bionic
 bionicinc_HEADERS = \
 	include/bionic/bionic.h \
 	include/bionic/cdefs.h \
@@ -60,7 +60,7 @@ bionicinc_HEADERS = \
 
 # bionicconfig.h
 # --------------
-bioniccfgincdir = $(libdir)/bionic-$(BIONIC_API_VERSION)/include
+bioniccfgincdir = $(libdir)/android/bionic-$(BIONIC_API_VERSION)/include
 nodist_bioniccfginc_HEADERS = \
 	bionicconfig.h
 
@@ -68,7 +68,7 @@ nodist_bioniccfginc_HEADERS = \
 # ---------------------
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = \
-	bionic-$(BIONIC_API_VERSION).pc
+	android-bionic-$(BIONIC_API_VERSION).pc
 
 $(pkgconfig_DATA): config.status
 

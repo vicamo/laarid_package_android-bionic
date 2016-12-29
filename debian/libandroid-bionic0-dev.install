@@ -1,5 +1,5 @@
 usr/include/*
 usr/lib/*/lib*.a
 usr/lib/*/lib*.so
-usr/lib/*/bionic-0.0/*
+usr/lib/*/android/bionic-0.0/*
 usr/lib/*/pkgconfig/*
