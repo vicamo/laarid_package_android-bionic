@@ -1,3 +1,9 @@
+android-bionic (0.1.5) testing; urgency=low
+
+  * add getprogname
+
+ -- You-Sheng Yang <vicamo@gmail.com>  Wed, 22 Feb 2017 17:35:10 +0800
+
 android-bionic (0.1.4) testing; urgency=low
 
   * ci: don't use source package Description field
