@@ -55,6 +55,9 @@ AC_SUBST([BIONIC_MICRO_VERSION])
 AC_SUBST([BIONIC_API_VERSION])
 AC_SUBST([BIONIC_RELEASE_NUMBER])
 
+# Define _GNU_SOURCE etc. where appropriate, e.g. for strptime() on glibc
+AC_USE_SYSTEM_EXTENSIONS
+
 AM_PROG_AR
 AC_PROG_CC
 AC_PROG_CXX
@@ -118,7 +121,7 @@ AC_CHECK_FUNCS([tgkill], [],
 # -------------
 AC_CHECK_HEADERS([sys/uio.h])
 
-AC_CHECK_FUNCS([ funopen open_memstream strlcat strlcpy])
+AC_CHECK_FUNCS([getprogname funopen open_memstream strlcat strlcpy])
 
 PKG_PROG_PKG_CONFIG
 
@@ -194,6 +197,13 @@ _______EOF
 _______EOF
   fi
 
+  if test x$bionic_cfg_func_getprogname != xyes; then
+    cat >>$outfile <<_______EOF
+#define BIONIC_NEED_GETPROGNAME 1
+
+_______EOF
+  fi
+
   cat >>$outfile <<_______EOF
 #ifdef __cplusplus
 } // extern "C"
@@ -239,6 +249,10 @@ fi
 
 if test x$ac_cv_func_strlcpy = xyes; then
   bionic_cfg_func_strlcpy=yes
+fi
+
+if test x$ac_cv_func_getprogname = xyes; then
+  bionic_cfg_func_getprogname=yes
 fi
 ])
 

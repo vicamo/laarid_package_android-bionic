@@ -56,6 +56,7 @@ libandroid_bionic_la_SOURCES = \
 	src/properties.cpp \
 	src/properties_compat.c \
 	src/stdio.c \
+	src/stdlib.c \
 	src/string.c \
 	src/strlcat.c \
 	src/uio.c \
@@ -70,6 +71,7 @@ bionicinc_HEADERS = \
 	include/bionic/properties.h \
 	include/bionic/properties_impl.h \
 	include/bionic/stdio.h \
+	include/bionic/stdlib.h \
 	include/bionic/string.h \
 	include/bionic/uio.h \
 	include/bionic/unistd.h
