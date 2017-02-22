@@ -101,7 +101,7 @@ AC_CHECK_FUNCS([gettid], [],
   )]
 )
 
-# tgkill wrapper
+# tgkill syscall wrapper
 # --------------
 AC_CHECK_FUNCS([tgkill], [],
   [AC_MSG_CHECKING([for syscall(SYS_tgkill)])
@@ -111,6 +111,23 @@ AC_CHECK_FUNCS([tgkill], [],
 #include <unistd.h>
 #include <sys/syscall.h>],
 [pid_t tid = syscall(SYS_tgkill);]
+    )],
+    [AC_MSG_RESULT([yes])],
+    [AC_MSG_ERROR([no])]
+  )]
+)
+
+# capget/capset syscall wrapper
+# --------------
+AC_CHECK_FUNCS([capget], [],
+  [AC_MSG_CHECKING([for syscall(SYS_capget)])
+  AC_COMPILE_IFELSE(
+    [AC_LANG_PROGRAM(
+[#define _GNU_SOURCE
+#include <unistd.h>
+#include <sys/syscall.h>
+#include <linux/capability.h>],
+[int ret = syscall(SYS_capget, (cap_user_header_t)NULL, (cap_user_data_t)NULL);]
     )],
     [AC_MSG_RESULT([yes])],
     [AC_MSG_ERROR([no])]
@@ -165,6 +182,13 @@ _______EOF
   if test x$bionic_cfg_func_tgkill != xyes; then
     cat >>$outfile <<_______EOF
 #define BIONIC_NEED_TGKILL 1
+
+_______EOF
+  fi
+
+  if test x$bionic_cfg_func_capget != xyes; then
+    cat >>$outfile <<_______EOF
+#define BIONIC_NEED_CAPGET_CAPSET 1
 
 _______EOF
   fi
@@ -233,6 +257,10 @@ fi
 
 if test x$ac_cv_func_tgkill = xyes; then
   bionic_cfg_func_tgkill=yes
+fi
+
+if test x$ac_cv_func_capget = xyes; then
+  bionic_cfg_func_capget=yes
 fi
 
 if test x$ac_cv_header_sys_uio_h = xyes; then

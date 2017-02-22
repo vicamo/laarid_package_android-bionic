@@ -24,6 +24,7 @@
 #include <errno.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <linux/capability.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -35,6 +36,11 @@ pid_t gettid(void);
 
 #if defined(BIONIC_NEED_TGKILL)
 int tgkill(int tgid, int tid, int sig);
+#endif
+
+#if defined(BIONIC_NEED_CAPGET_CAPSET)
+int capget(cap_user_header_t hdrp, cap_user_data_t datap);
+int capset(cap_user_header_t hdrp, const cap_user_data_t datap);
 #endif
 
 #ifdef __cplusplus

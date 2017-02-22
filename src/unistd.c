@@ -42,3 +42,17 @@ int tgkill(int tgid, int tid, int sig)
 }
 
 #endif /* BIONIC_NEED_TGKILL */
+
+#if defined(BIONIC_NEED_CAPGET_CAPSET)
+
+int capget(cap_user_header_t hdrp, cap_user_data_t datap)
+{
+  return syscall(SYS_capget, hdrp, datap);
+}
+
+int capset(cap_user_header_t hdrp, const cap_user_data_t datap)
+{
+  return syscall(SYS_capset, hdrp, datap);
+}
+
+#endif /* BIONIC_NEED_CAPGET_CAPSET */
